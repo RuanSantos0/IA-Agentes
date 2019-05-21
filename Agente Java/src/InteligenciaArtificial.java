@@ -11,21 +11,22 @@ public class InteligenciaArtificial {
 		
 		String[][] labirinto = new String[tam][tam];	
 		int[][] passeiPor = new int[tam][tam];
+		int[][] limpei = new int[tam][tam];
 		
-		Labirinto lab = new Labirinto();		
+		Labirinto lab = new Labirinto();
 		
 		Scanner op = new Scanner(System.in);
 		
 		lab.preencher_labirinto(tam, labirinto);
 		
 		while(true)
+			
 		{			
 			System.out.println("Escolha as Posições");
 			System.out.print("X: ");
 			x = op.nextInt();
 			if(x==-1)
-			{				 
-				//labirinto[random.nextInt(tam-1)][random.nextInt(tam-1)] = "*_*";
+			{		
 				lab.ExibirLab(tam, labirinto);
 				break;
 			}	
@@ -41,13 +42,19 @@ public class InteligenciaArtificial {
 		
 		for (int i = 0; i < tam; i++) {
 			for (int j = 0; j < tam; j++) {
-								
+						
+				if (labirinto[0][0].equals("P")) labirinto[0][0] = "*_*";
+				
 				if(labirinto[i][j].equals("P") && passeiPor[i][j] == 0)
 				{
-					if(j==tam-1) continue;
+					if(i==tam-1) {
+						break;
+						//continue;
+					}
 					i = i+1;
 					j = j-1;
-					if(labirinto[i][j].equals("X")) passeiPor[i][j] = 1;
+					if(labirinto[i][j].equals("X")) limpei[i][j] = 1; 
+					passeiPor[i][j] = 1;
 					labirinto[i][j] = "*_*";					
 					lab.ExibirLab(tam, labirinto);
 					labirinto[i][j] = "O";
@@ -58,7 +65,8 @@ public class InteligenciaArtificial {
 				if(i>0 && labirinto[i-1][j].equals("X") && passeiPor[i-1][j] == 0)
 				{
 					i = i-1;
-					passeiPor[i][j] = 1;					
+					passeiPor[i][j] = 1;
+					if(labirinto[i][j].equals("X"))limpei[i][j] = 1;
 					labirinto[i][j] = "*_*";
 					lab.ExibirLab(tam, labirinto);					
 					labirinto[i][j] = "O";
@@ -66,19 +74,23 @@ public class InteligenciaArtificial {
 					continue;
 				}
 					
-				if(labirinto[i][j].equals("X")) passeiPor[i][j] = 1;
-				labirinto[i][j] = "*_*";
-				lab.ExibirLab(tam, labirinto);
-				labirinto[i][j] = "O";
-				Thread.sleep(1500);
+				if(passeiPor[i][j] == 0) {
+					if(labirinto[i][j].equals("X"))limpei[i][j] = 1; 
+					passeiPor[i][j] = 1;
+					labirinto[i][j] = "*_*";
+					lab.ExibirLab(tam, labirinto);
+					labirinto[i][j] = "O";
+					Thread.sleep(1500);
+				}
 			}
 		}
 		for (int i = 0; i < tam; i++) {
 			for (int j = 0; j < tam; j++) {
-				if(passeiPor[i][j] == 0 && labirinto[i][j].equals("X"))
+				if(passeiPor[i][j] == 0 && !labirinto[i][j].equals("P"))
 				{
+					if(labirinto[i][j].equals("X"))limpei[i][j] = 1;
 					labirinto[i][j] = "*_*";
-					passeiPor[i][j] = 1;
+					passeiPor[i][j] = 1;					
 					lab.ExibirLab(tam, labirinto);
 					labirinto[i][j] = "O";
 					Thread.sleep(1500);
@@ -87,7 +99,7 @@ public class InteligenciaArtificial {
 		}
 		
 		System.out.println("FIM");
-		lab.matriz_Lab(tam, passeiPor);
+		lab.matriz_Lab(tam, limpei);
 	}
 
 }
